@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 html {
-  font-family: "Montserrat", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 body {
   background: #eee;
@@ -21,7 +21,7 @@ header {
 
 header h1 {
   color: #fff;
-  font-family: "McLaren", cursive;
+  font-family: Calibri, "Trebuchet MS", sans-serif;
   font-weight: 200;
 }
 
