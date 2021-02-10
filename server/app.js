@@ -1,20 +1,28 @@
 const express = require("express");
-const bodayParser = require("body-parser");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const app = express();
 
 app.set("view engine", "ejs");
-app.use(bodayParser.urlencoded({ extended: true }));
-app.use(cors);
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cors());
 app.use(express.static("public"));
-mongoose.connect("mongodb://localhost:27017/keeperDB", {
-  useNewUrlParser: true, useUnifiedTopology: true 
+mongoose.connect("mongodb://127.0.0.1:27017/keeper", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
+
+const connection = mongoose.connection;
+connection.once('open', function () {
+  console.log("MongoDB connection established successfully")
+})
+
 const noteSchema = {
-  title: String,
-  content: String
+  title: { type: String, required: true },
+  content: { type: String, required:true}
 };
 
 const Note = mongoose.model("Note", noteSchema);
@@ -26,9 +34,9 @@ app.route("/notes")
   .get(function (req, res) {
     Note.find(function (err, foundNotes) {
       if (!err) {
-        res.send(foundNotes);
+        res.json(foundNotes);
       } else {
-        res.send(err);
+        console.log(err);
       }
     })
   })
@@ -38,75 +46,76 @@ app.route("/notes")
       title: req.body.title,
       content: req.body.content
     })
-    newNote.save(function (err) {
-      if (!err) {
-        res.send("Successfully added a new note!");
-      } else {
-        res.send(err);
-      }
-    })
+    newNote.save()
+      .then(todo => {
+             res.status(200).json({'note':'note added successfully'})
+      })
+      .catch(err => {
+            res.status(400).send('adding new note failed')
+      })
   })
 
-  .delete (function (req, res) {
-  Note.deleteMany(function (err) {
-    if (!err) {
-      res.send("Successfully deleted all notes");
-    } else {
-      res.send(err);
-    }
-  })
-});
+  // .delete (function (req, res) {
+  // Note.deleteMany(function (err) {
+  //   if (!err) {
+  //     console.log("Successfully deleted all notes");
+  //   } else {
+  //     console.log(err);
+  //   }
+  // })
+  // });
 
 //////////////////////////////////////Requesting Targetting A Specific Note///////////////////////////
-app.route("/notes/:noteTitle")
+app.route("/notes/:id")
 
-  .get(function (req, res) {
-    Note.findOne({ title: req.params.noteTitle }, function (err, foundNote) {
-      if (foundNote) {
-        res.send(foundNote);
-      } else {
-        res.send("No notes matching that id was found.")
-      }
-    })
-  })
+  // .get(function (req, res) {
+  //   Note.findOne({ _id: req.params.id }, function (err, foundNote) {
+  //     if (foundNote) {
+  //       res.json(foundNote);
+  //     } else {
+  //       console.log("No notes matching that id was found.")
+  //     }
+  //   })
+  // })
 
-  .put(function (req, res) {
-    Note.update(
-      { title: req.params.noteTitle },
-      { title: req.body.title, connect: req.body.content },
-      { overwrite: true },
-      function (err) {
-        if (!err) {
-          res.send("Successfully update note.")
-        } else {
-          res.send(err)
-        }
-      }
-    )
-  })
+  // .put(function (req, res) {
+  //   Note.update(
+  //     { _id: req.params.id },
+  //     { title: req.body.title, content: req.body.content },
+  //     { overwrite: true },
+  //     function (err) {
+  //       if (!err) {
+  //         console.log("Successfully update note.")
+  //       } else {
+  //         console.log(err)
+  //       }
+  //     }
+  //   )
+  // })
 
-  .patcch(function(req, res){
+  .patch(function(req, res){
   Note.update(
-    { title: req.params.noteTitle },
+    { _id: req.params.id },
     { $set: req.body },
     function (err) {
       if (!err) {
-        res.send("Successfully updated note.")
+        console.log("Successfully updated note.")
       } else {
-        res.send(err)
+        console.log(err)
       }
     }
     )
   })
   
-  .delete (function (req, res) {
+  .delete(function (req, res) {
+    console.log(req.params)
   Note.deleteOne(
-    { title: req.params.articleTitle },
+    { _id: req.params.id },
     function (err) {
       if (!err) {
-        res.send("Successfully deleted the corresponding note")
+        console.log("Successfully deleted the corresponding note")
       } else {
-        res.send(err)
+        console.log(err)
       }
     }
   )
