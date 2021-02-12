@@ -31,8 +31,9 @@ function CreateArea(props) {
       content: note.content
     }
     
-    axios.post('http://localhost:8000/notes', newNote)
-         .then(res => console.log(res.data))
+    axios
+      .post("https://keeper-mern.herokuapp.com/notes", newNote)
+      .then((res) => console.log(res.data));
     setNote({
       title: "",
       content: ""

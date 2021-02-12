@@ -9,12 +9,15 @@ function App() {
   const [notes, setNotes] = useState([]);
 
   const getAllNotes = async () => {
-    await axios.get('http://localhost:8000/notes')
+    await axios
+      .get("https://keeper-mern.herokuapp.com/notes")
       .then((res) => {
-        const allNotes = res.data
-        setNotes(allNotes)
+        const allNotes = res.data;
+        setNotes(allNotes);
       })
-      .catch(function (err) { console.log(err) })
+      .catch(function (err) {
+        console.log(err);
+      });
   };
 
   useEffect(() => { getAllNotes() }, [] );
@@ -32,9 +35,11 @@ function App() {
         return index !== id[1];
       });
     });
-    axios.delete(`http://localhost:8000/notes/${id[0]}`).then((res) => {
-      console.log(res);
-    });
+    axios
+      .delete(`https://keeper-mern.herokuapp.com/notes/${id[0]}`)
+      .then((res) => {
+        console.log(res);
+      });
   }
 
   return (
