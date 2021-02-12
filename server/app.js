@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -5,7 +6,7 @@ const ejs = require("ejs");
 const mongoose = require("mongoose");
 const app = express();
 const port = process.env.PORT || 8000
-require("dotenv").config();
+
 
 
 app.set("view engine", "ejs");
@@ -14,8 +15,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static("public"));
 mongoose.connect(
-  "mongodb+srv://admin-ke:test123@cluster0.kqtwi.mongodb.net/keeper?retryWrites=true&w=majority",
-  {
+  process.env.DBCONNECT,  {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }
