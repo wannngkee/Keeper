@@ -4,16 +4,22 @@ const cors = require("cors");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const app = express();
+const port = process.env.PORT || 8000
+require("dotenv").config();
+
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static("public"));
-mongoose.connect("mongodb://127.0.0.1:27017/keeper", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  "mongodb+srv://admin-ke:test123@cluster0.kqtwi.mongodb.net/keeper?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 const connection = mongoose.connection;
 connection.once('open', function () {
@@ -28,6 +34,14 @@ const noteSchema = {
 const Note = mongoose.model("Note", noteSchema);
 
 //////////////////////////////////////Requesting Targetting All Notes///////////////////////////
+
+// app.get("/", function (req, res) {
+//   res.redirect("/notes");
+// });
+
+// app.get("/favicon.ico", function (req, res) {
+//   res.redirect("/notes");
+// });
 
 app.route("/notes")
 
@@ -122,4 +136,4 @@ app.route("/notes/:id")
 });
 
 
-app.listen(8000, () => console.log("server running on port 8000"));
+app.listen(port, () => console.log("server running at" + port));
