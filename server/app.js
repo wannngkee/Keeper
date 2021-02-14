@@ -69,90 +69,58 @@ app.post("/register", function (req, res) {
   })
 })
 
+
 //////////////////////////////////////Requesting Targetting All Notes///////////////////////////
 
 app.route("/notes")
   //if (req.isAuthenticated()){
   .get(function (req, res) {
-    Note.find({email: req.body.email}, function (err, founduser) {
+    Note.find({ email: req.body.email }, function (err, founduser) {
       if (!err) {
         res.json(founduser.notes);
       } else {
         console.log(err);
       }
-    })
+    });
   })
-  
+
   .post(function (req, res) {
     const newNote = new Note({
       title: req.body.title,
-      content: req.body.content
-    })
-    newNote.save()
-      .then(todo => {
-             res.status(200).json({'note':'note added successfully'})
+      content: req.body.content,
+    });
+    newNote
+      .save()
+      .then((todo) => {
+        res.status(200).json({ note: "note added successfully" });
       })
-      .catch(err => {
-            res.status(400).send('adding new note failed')
-      })
-  })
- //   }
+      .catch((err) => {
+        res.status(400).send("adding new note failed");
+      });
+  });
+//   }
 
 //////////////////////////////////////Requesting Targetting A Specific Note///////////////////////////
 app.route("/notes/:id")
-
-  // .get(function (req, res) {
-  //   Note.findOne({ _id: req.params.id }, function (err, foundNote) {
-  //     if (foundNote) {
-  //       res.json(foundNote);
-  //     } else {
-  //       console.log("No notes matching that id was found.")
-  //     }
-  //   })
-  // })
-
-  // .put(function (req, res) {
-  //   Note.update(
-  //     { _id: req.params.id },
-  //     { title: req.body.title, content: req.body.content },
-  //     { overwrite: true },
-  //     function (err) {
-  //       if (!err) {
-  //         console.log("Successfully update note.")
-  //       } else {
-  //         console.log(err)
-  //       }
-  //     }
-  //   )
-  // })
-
-  .patch(function(req, res){
-  Note.update(
-    { _id: req.params.id },
-    { $set: req.body },
-    function (err) {
+  .patch(function (req, res) {
+    Note.update({ _id: req.params.id }, { $set: req.body }, function (err) {
       if (!err) {
-        console.log("Successfully updated note.")
+        console.log("Successfully updated note.");
       } else {
-        console.log(err)
+        console.log(err);
       }
-    }
-    )
+    });
   })
-  
+
   .delete(function (req, res) {
     //console.log(req.params)
-  Note.deleteOne(
-    { _id: req.params.id },
-    function (err) {
+    Note.deleteOne({ _id: req.params.id }, function (err) {
       if (!err) {
-        console.log("Successfully deleted the corresponding note")
+        console.log("Successfully deleted the corresponding note");
       } else {
-        console.log(err)
+        console.log(err);
       }
-    }
-  )
-});
-
+    });
+  });
 
 app.listen(port, () => console.log("server running at" + port));
