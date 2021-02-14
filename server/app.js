@@ -5,15 +5,28 @@ const cors = require("cors");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const app = express();
-const port = process.env.PORT || 8000
-
-
+const session = require("express-session");
+const passport = require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
+const port = process.env.PORT || 8000;
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static("public"));
+
+app.use(
+  session({
+    secret: "Our little secret.",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 mongoose.connect(
   process.env.DBCONNECT,  {
     useNewUrlParser: true,
@@ -32,6 +45,28 @@ const noteSchema = {
 };
 
 const Note = mongoose.model("Note", noteSchema);
+
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true },
+  password: { type: String, required:true}
+  notes: { type: Note, required:true},
+});
+
+userSchema.plugin(passportLocalMongoose);
+
+const User = new mongoose.model("User", userSchema);
+
+passport.use(User.createStrategy());
+
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
 
 //////////////////////////////////////Requesting Targetting All Notes///////////////////////////
 
