@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 const app = express();
 const session = require("express-session");
 const passport = require("passport");
@@ -39,22 +40,22 @@ connection.once('open', function () {
   console.log("MongoDB connection established successfully")
 })
 
-const noteSchema = {
+const noteSchema = new Schema({
   title: { type: String, required: true },
-  content: { type: String, required:true}
-};
+  content: { type: String, required: true }
+});
 
 const Note = mongoose.model("Note", noteSchema);
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   email: { type: String, required: true },
-  password: { type: String, required:true}
-  notes: { type: Note, required:true},
+  password: { type: String, required: true },
+  notes: [{ type: Schema.Types.ObjectId, ref: "Note" }],
 });
 
 userSchema.plugin(passportLocalMongoose);
 
-const User = new mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
 passport.use(User.createStrategy());
 
