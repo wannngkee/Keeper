@@ -4,7 +4,6 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 const app = express();
 const session = require("express-session");
 const passport = require("passport");
@@ -27,6 +26,7 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+mongoose.set("useCreateIndex", true);
 
 mongoose.connect(
   process.env.DBCONNECT,  {
@@ -40,22 +40,9 @@ connection.once('open', function () {
   console.log("MongoDB connection established successfully")
 })
 
-const noteSchema = new Schema({
-  title: { type: String, required: true },
-  content: { type: String, required: true }
-});
+const Note = require("./models/note.model")
 
-const Note = mongoose.model("Note", noteSchema);
-
-const userSchema = new Schema({
-  email: { type: String, required: true },
-  password: { type: String, required: true },
-  notes: [{ type: Schema.Types.ObjectId, ref: "Note" }],
-});
-
-userSchema.plugin(passportLocalMongoose);
-
-const User = mongoose.model("User", userSchema);
+const User = require("./models/user.model")
 
 passport.use(User.createStrategy());
 
@@ -69,22 +56,27 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
+app.post("/register", function (req, res) {
+  User.register({ username: req.body.username }, req.body.password, function (err, user) {
+    if (err) {
+      console.log(err);
+      res.redirect("/register");
+    } else {
+      passport.authenticate("local")(req, res, function () {
+        res.redirect("/notes")
+      })
+    }
+  })
+})
+
 //////////////////////////////////////Requesting Targetting All Notes///////////////////////////
 
-// app.get("/", function (req, res) {
-//   res.redirect("/notes");
-// });
-
-// app.get("/favicon.ico", function (req, res) {
-//   res.redirect("/notes");
-// });
-
 app.route("/notes")
-
+  //if (req.isAuthenticated()){
   .get(function (req, res) {
-    Note.find(function (err, foundNotes) {
+    Note.find({email: req.body.email}, function (err, founduser) {
       if (!err) {
-        res.json(foundNotes);
+        res.json(founduser.notes);
       } else {
         console.log(err);
       }
@@ -104,16 +96,7 @@ app.route("/notes")
             res.status(400).send('adding new note failed')
       })
   })
-
-  // .delete (function (req, res) {
-  // Note.deleteMany(function (err) {
-  //   if (!err) {
-  //     console.log("Successfully deleted all notes");
-  //   } else {
-  //     console.log(err);
-  //   }
-  // })
-  // });
+ //   }
 
 //////////////////////////////////////Requesting Targetting A Specific Note///////////////////////////
 app.route("/notes/:id")
@@ -158,7 +141,7 @@ app.route("/notes/:id")
   })
   
   .delete(function (req, res) {
-    console.log(req.params)
+    //console.log(req.params)
   Note.deleteOne(
     { _id: req.params.id },
     function (err) {
