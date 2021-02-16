@@ -35,7 +35,7 @@ router.post("/", auth, (req, res) => {
 //@desc   Update note
 //@access Private
 router.patch("/:id", auth, (req, res) => {
-    Note.update({ _id: req.params.id }, { $set: req.body }, function (err) {
+    User.findOneAndUpdate({ "notes._id": req.params.id }, { $set: req.body }, {new: true}, function (err) {
       if (!err) {
         console.log("Successfully updated note.");
       } else {
@@ -49,7 +49,7 @@ router.patch("/:id", auth, (req, res) => {
 //@access Private
 router.delete("/:id", auth, (req, res) => {
     //console.log(req.params)
-    Note.deleteOne({ _id: req.params.id }, function (err) {
+  User.findOneAndUpdate({ "notes._id": req.params.id }, {$pull: {notes: {_id: req.params.id}}}, {new: true}, function (err) {
       if (!err) {
         console.log("Successfully deleted the corresponding note");
       } else {
