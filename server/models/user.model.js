@@ -7,6 +7,6 @@ const userSchema = new mongoose.Schema({
   notes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Note" }],
 });
 
-userSchema.plugin(passportLocalMongoose);
-
+// userSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model("User", userSchema);
+
