@@ -5,10 +5,8 @@ const cors = require("cors");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const app = express();
-// const session = require("express-session");
-// const passport = require("passport");
-// const passportLocalMongoose = require("passport-local-mongoose");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken")
 const port = process.env.PORT || 8000;
 
 app.set("view engine", "ejs");
@@ -17,20 +15,10 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static("public"));
 
-// app.use(
-//   session({
-//     secret: "Our little secret.",
-//     resave: false,
-//     saveUninitialized: false,
-//   })
-// );
-
-// app.use(passport.initialize());
-// app.use(passport.session());
 mongoose.set("useCreateIndex", true);
 
 mongoose.connect(
-  process.env.DBCONNECT,
+  process.env.MONGOURI,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -46,18 +34,6 @@ const Note = require("./models/note.model")
 
 const User = require("./models/user.model")
 
-// passport.use(User.createStrategy());
-
-// passport.serializeUser(function(user, done) {
-//   done(null, user.id);
-// });
-
-// passport.deserializeUser(function(id, done) {
-//   User.findById(id, function(err, user) {
-//     done(err, user);
-//   });
-// });
-
 app.post("/register", function (req, res) {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -65,16 +41,7 @@ app.post("/register", function (req, res) {
   }
   User.findOne({ email })
     .then(user => {
-    if (user) return res.status(400).send( "User already exists" );
-    // User.register({ username: email }, password, function (err, user) {
-    //   if (err) {
-    //     return res.status(400).send(err);
-    //   } else {
-    //     passport.authenticate("local")(req, res, function () {
-    //     return res.status(200).json({ msg: "User registered successfully" });
-    //     });
-    //   }
-    // });   
+    if (user) return res.status(400).send( "User already exists" );  
     const newUser = new User({
       email, password
     })
@@ -85,11 +52,16 @@ app.post("/register", function (req, res) {
           newUser.password = hash;
           newUser.save()
             .then((user) => {
-            res.status(200).json({msg:"User created successfully"})
-            })
+              jwt.sign(
+                { id: user.id },
+                process.env.JWTSECRET,
+                { expiresIn: 3600 },
+                (err, token) => {
+                  if (err) throw err;
+                  res.status(200).json({ msg: "User created successfully", token });
+                })})
             .catch((err) => {
-              res.status(400).json({msg:err})
-            })        
+              res.status(400).send(err);});         
       })
     })  
   }) 
@@ -99,7 +71,6 @@ app.post("/register", function (req, res) {
 //////////////////////////////////////Requesting Targetting All Notes///////////////////////////
 
 app.route("/notes")
-  //if (req.isAuthenticated()){
   .get(function (req, res) {
     Note.find({ email: req.body.email }, function (err, founduser) {
       if (!err) {
@@ -124,7 +95,6 @@ app.route("/notes")
         res.status(400).send("adding new note failed");
       });
   });
-//   }
 
 //////////////////////////////////////Requesting Targetting A Specific Note///////////////////////////
 app.route("/notes/:id")
