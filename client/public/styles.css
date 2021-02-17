@@ -101,3 +101,21 @@ form.create-note button {
   cursor: pointer;
   outline: none;
 }
+
+.box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.right {
+  margin-top: 10px;
+}
+
+.right :hover {
+  text-decoration: underline;
+}
+
+.link {
+  text-decoration: none;
+  color: #fff;
+}
