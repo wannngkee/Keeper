@@ -4,7 +4,6 @@ import HighlightIcon from "@material-ui/icons/Highlight";
 
 function Header() {
   const currentRoute = useHistory().location.pathname.toLowerCase();
-  console.log(currentRoute);
   return (
     <header className="box">
       <div className="left">
