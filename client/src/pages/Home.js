@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Header from "./Header";
-import Footer from "./Footer";
-import Note from "./Note";
-import CreateArea from "./CreateArea";
-import axios from "axios"
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import Note from "../components/Note";
+import CreateArea from "../components/CreateArea";
+import axios from "axios";
 
-function App() {
+function Home() {
   const [notes, setNotes] = useState([]);
 
   const getAllNotes = async () => {
@@ -20,17 +20,18 @@ function App() {
       });
   };
 
-  useEffect(() => { getAllNotes() }, [] );
-  
+  useEffect(() => {
+    getAllNotes();
+  }, []);
 
   function addNote(newNote) {
-    setNotes(prevNotes => {
+    setNotes((prevNotes) => {
       return [...prevNotes, newNote];
     });
   }
 
   function deleteNote(id) {
-    setNotes(prevNotes => {
+    setNotes((prevNotes) => {
       return prevNotes.filter((noteItem, index) => {
         return index !== id[1];
       });
@@ -50,7 +51,7 @@ function App() {
         return (
           <Note
             key={index}
-            id={[noteItem._id,index]}
+            id={[noteItem._id, index]}
             title={noteItem.title}
             content={noteItem.content}
             onDelete={deleteNote}
@@ -62,4 +63,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
