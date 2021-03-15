@@ -1,8 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import HighlightIcon from "@material-ui/icons/Highlight";
 
 function Header() {
+  const currentRoute = useHistory().location.pathname.toLowerCase();
+  console.log(currentRoute);
   return (
     <header className="box">
       <div className="left">
@@ -13,11 +15,17 @@ function Header() {
         </Link>
       </div>
       <div className="right link">
-        <Link className="link" to="/login">
+        <Link
+          className={currentRoute === "/login" ? "focus" : "link"}
+          to="/login"
+        >
           Sign in
         </Link>{" "}
         |{" "}
-        <Link className="link" to="/register">
+        <Link
+          className={currentRoute === "/register" ? "focus" : "link"}
+          to="/register"
+        >
           Sign up
         </Link>
       </div>

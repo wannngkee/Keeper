@@ -114,9 +114,10 @@ form.create-note button {
   margin-top: 10px;
 }
 
-.link :hover {
+.focus, .link :hover {
   color: #fff
 }
+
 
 .link {
   text-decoration: none;
