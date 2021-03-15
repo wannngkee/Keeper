@@ -1,14 +1,14 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Home from "../pages/Home";
-import Signin from "../pages/Signin";
-import Signup from "../pages/Signup";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   return (
     <Router>
-      <Route exact path="/signin" component={Signin} />
-      <Route exact path="/signup" component={Signup} />
+      <Route exact path="/login" component={Login} />
+      <Route exact path="/register" component={Register} />
       <Route exact path="/" component={Home} />
     </Router>
   );

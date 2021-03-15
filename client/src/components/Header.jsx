@@ -13,11 +13,11 @@ function Header() {
         </Link>
       </div>
       <div className="right link">
-        <Link className="link" to="/signin">
+        <Link className="link" to="/login">
           Sign in
         </Link>{" "}
         |{" "}
-        <Link className="link" to="/signup">
+        <Link className="link" to="/register">
           Sign up
         </Link>
       </div>
