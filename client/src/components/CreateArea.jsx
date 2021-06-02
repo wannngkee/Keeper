@@ -31,6 +31,7 @@ function CreateArea(props) {
       const newNote = {
         title: note.title,
         content: note.content,
+        user: props.user,
       };
       if (newNote.title && newNote.content) {
         axios

@@ -13,8 +13,8 @@ const Note = (props) => {
   };
   const handleEdit = () => {
     setDone((done) => !done);
-    const newNote = { title, content };
     if (!done) {
+      const newNote = { title, content };
       props.setNotes((notes) => {
         const newNotes = notes;
         newNotes[props.id] = newNote;

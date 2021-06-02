@@ -9,12 +9,11 @@ import Alert from "@material-ui/lab/Alert";
 import { useAuth0 } from "@auth0/auth0-react";
 
 function Home() {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, user } = useAuth0();
   const [notes, setNotes] = useState([]);
   const [open, setOpen] = useState(false);
   const [type, setType] = useState();
   const [message, setMessage] = useState();
-  console.log("notes", notes);
   const getAllNotes = async () => {
     if (isAuthenticated) {
       await axios
@@ -78,7 +77,11 @@ function Home() {
   return (
     <div>
       <Header />
-      <CreateArea onAdd={addNote} isAuthenticated={isAuthenticated} />
+      <CreateArea
+        onAdd={addNote}
+        isAuthenticated={isAuthenticated}
+        user={user.email}
+      />
       <Snackbar
         open={open}
         autoHideDuration={2000}
@@ -95,6 +98,7 @@ function Home() {
             note={noteItem}
             setNotes={setNotes}
             onDelete={deleteNote}
+            user={user.email}
           />
         );
       })}
