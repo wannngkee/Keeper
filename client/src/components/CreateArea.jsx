@@ -2,15 +2,16 @@ import React, { useState } from "react";
 import AddIcon from "@material-ui/icons/Add";
 import Fab from "@material-ui/core/Fab";
 import Zoom from "@material-ui/core/Zoom";
-import axios from 'axios';
-
+import axios from "axios";
+import { withAuthenticationRequired } from "@auth0/auth0-react";
+import Loading from "./Loading";
 
 function CreateArea(props) {
   const [isExpanded, setExpanded] = useState(false);
 
   const [note, setNote] = useState({
     title: "",
-    content: ""
+    content: "",
   });
 
   function handleChange(event) {
@@ -19,7 +20,7 @@ function CreateArea(props) {
     setNote((prevNote) => {
       return {
         ...prevNote,
-        [name]: value
+        [name]: value,
       };
     });
   }
@@ -28,17 +29,18 @@ function CreateArea(props) {
     props.onAdd(note);
     const newNote = {
       title: note.title,
-      content: note.content
+      content: note.content,
+    };
+    if (newNote.title && newNote.content) {
+      axios
+        .post("https://keeper-mern.herokuapp.com/notes", newNote)
+        .then((res) => console.log(res.data));
+      setNote({
+        title: "",
+        content: "",
+      });
+      event.preventDefault();
     }
-    
-    axios
-      .post("https://keeper-mern.herokuapp.com/notes", newNote)
-      .then((res) => console.log(res.data));
-    setNote({
-      title: "",
-      content: ""
-    });
-    event.preventDefault();
   }
 
   function expand() {

@@ -4,9 +4,14 @@ import Footer from "../components/Footer";
 import Note from "../components/Note";
 import CreateArea from "../components/CreateArea";
 import axios from "axios";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
 function Home() {
   const [notes, setNotes] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState();
+  const [message, setMessage] = useState();
 
   const getAllNotes = async () => {
     await axios
@@ -24,10 +29,26 @@ function Home() {
     getAllNotes();
   }, []);
 
+  function handleClose(event, reason) {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  }
+
   function addNote(newNote) {
-    setNotes((prevNotes) => {
-      return [...prevNotes, newNote];
-    });
+    setOpen(true);
+    if (newNote.title && newNote.content) {
+      setNotes((prevNotes) => {
+        return [...prevNotes, newNote];
+      });
+      setType("success");
+      setMessage("Note added");
+    } else {
+      setType("error");
+      setMessage("Note cannot be added without title or content");
+    }
   }
 
   function deleteNote(id) {
@@ -47,6 +68,14 @@ function Home() {
     <div>
       <Header />
       <CreateArea onAdd={addNote} />
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "center", horizontal: "center" }}
+      >
+        <Alert severity={type}>{message}</Alert>
+      </Snackbar>
       {notes.map((noteItem, index) => {
         return (
           <Note
