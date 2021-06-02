@@ -6,8 +6,10 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "@auth0/auth0-react": "^1.5.0",
     "@material-ui/core": "4.11.2",
     "@material-ui/icons": "4.11.2",
+    "@userfront/react": "^0.1.24",
     "antd": "^4.14.0",
     "axios": "^0.21.1",
     "ejs": "^3.1.5",
