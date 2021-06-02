@@ -1,12 +1,11 @@
-
-
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
 html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 body {
   background: #eee;
@@ -24,7 +23,7 @@ header {
 
 header h1 {
   color: #111;
-  font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo;
   font-weight: 200;
 }
 
@@ -39,6 +38,7 @@ footer {
 footer p {
   color: #ccc;
 }
+
 .note {
   background: #fff;
   border-radius: 7px;
@@ -48,15 +48,31 @@ footer p {
   margin: 16px;
   float: left;
 }
-.note h1 {
+
+.note textarea:disabled,
+.note input:disabled {
+  color: #000;
+  border: none;
+}
+.note input {
   font-size: 1.1em;
   margin-bottom: 6px;
+  font-weight: bold;
+  font-family: inherit;
+  border: none;
+  outline: none;
+  color: #333;
 }
-.note p {
+.note textarea {
   font-size: 1.1em;
+  font-family: inherit;
   margin-bottom: 10px;
   white-space: pre-wrap;
   word-wrap: break-word;
+  resize: none;
+  border: none;
+  outline: none;
+  color: #333;
 }
 
 .note button {
@@ -114,13 +130,39 @@ form.create-note button {
   margin-top: 10px;
 }
 
-.focus, .link :hover {
-  color: #fff
+.focus,
+.link :hover {
+  color: #fff;
 }
-
 
 .link {
   text-decoration: none;
   color: #111;
 }
 
+.auth {
+  cursor: pointer;
+  text-align: center;
+  padding-right: 30px;
+}
+
+.auth:hover {
+  color: #fff;
+}
+
+.logout {
+  text-align: center;
+}
+
+.spinner {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: white;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
