@@ -38,6 +38,7 @@ footer {
 footer p {
   color: #ccc;
 }
+
 .note {
   background: #fff;
   border-radius: 7px;
@@ -47,15 +48,31 @@ footer p {
   margin: 16px;
   float: left;
 }
-.note h1 {
+
+.note textarea:disabled,
+.note input:disabled {
+  color: #000;
+  border: none;
+}
+.note input {
   font-size: 1.1em;
   margin-bottom: 6px;
+  font-weight: bold;
+  font-family: inherit;
+  border: none;
+  outline: none;
+  color: #333;
 }
-.note p {
+.note textarea {
   font-size: 1.1em;
+  font-family: inherit;
   margin-bottom: 10px;
   white-space: pre-wrap;
   word-wrap: break-word;
+  resize: none;
+  border: none;
+  outline: none;
+  color: #333;
 }
 
 .note button {

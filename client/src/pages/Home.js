@@ -6,28 +6,39 @@ import CreateArea from "../components/CreateArea";
 import axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function Home() {
+  const { isAuthenticated } = useAuth0();
   const [notes, setNotes] = useState([]);
   const [open, setOpen] = useState(false);
   const [type, setType] = useState();
   const [message, setMessage] = useState();
-
+  console.log("notes", notes);
   const getAllNotes = async () => {
-    await axios
-      .get("https://keeper-mern.herokuapp.com/notes")
-      .then((res) => {
-        const allNotes = res.data;
-        setNotes(allNotes);
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
+    if (isAuthenticated) {
+      await axios
+        .get("https://keeper-mern.herokuapp.com/notes")
+        .then((res) => {
+          const allNotes = res.data;
+          setNotes(allNotes);
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    } else {
+      setNotes([
+        {
+          title: "Welcome to Keeper",
+          content: "Please feel free to leave a note :)",
+        },
+      ]);
+    }
   };
 
   useEffect(() => {
     getAllNotes();
-  }, []);
+  }, [isAuthenticated]);
 
   function handleClose(event, reason) {
     if (reason === "clickaway") {
@@ -67,12 +78,12 @@ function Home() {
   return (
     <div>
       <Header />
-      <CreateArea onAdd={addNote} />
+      <CreateArea onAdd={addNote} isAuthenticated={isAuthenticated} />
       <Snackbar
         open={open}
         autoHideDuration={2000}
         onClose={handleClose}
-        anchorOrigin={{ vertical: "center", horizontal: "center" }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert severity={type}>{message}</Alert>
       </Snackbar>
@@ -81,8 +92,8 @@ function Home() {
           <Note
             key={index}
             id={[noteItem._id, index]}
-            title={noteItem.title}
-            content={noteItem.content}
+            note={noteItem}
+            setNotes={setNotes}
             onDelete={deleteNote}
           />
         );

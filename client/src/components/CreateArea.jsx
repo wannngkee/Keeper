@@ -3,10 +3,10 @@ import AddIcon from "@material-ui/icons/Add";
 import Fab from "@material-ui/core/Fab";
 import Zoom from "@material-ui/core/Zoom";
 import axios from "axios";
-import { withAuthenticationRequired } from "@auth0/auth0-react";
-import Loading from "./Loading";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function CreateArea(props) {
+  const { loginWithRedirect } = useAuth0();
   const [isExpanded, setExpanded] = useState(false);
 
   const [note, setNote] = useState({
@@ -26,20 +26,24 @@ function CreateArea(props) {
   }
 
   function submitNote(event) {
-    props.onAdd(note);
-    const newNote = {
-      title: note.title,
-      content: note.content,
-    };
-    if (newNote.title && newNote.content) {
-      axios
-        .post("https://keeper-mern.herokuapp.com/notes", newNote)
-        .then((res) => console.log(res.data));
-      setNote({
-        title: "",
-        content: "",
-      });
-      event.preventDefault();
+    if (props.isAuthenticated) {
+      props.onAdd(note);
+      const newNote = {
+        title: note.title,
+        content: note.content,
+      };
+      if (newNote.title && newNote.content) {
+        axios
+          .post("https://keeper-mern.herokuapp.com/notes", newNote)
+          .then((res) => console.log(res.data));
+        setNote({
+          title: "",
+          content: "",
+        });
+        event.preventDefault();
+      }
+    } else {
+      loginWithRedirect({ screen_hint: "signup" });
     }
   }
 
