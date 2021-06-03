@@ -70,18 +70,6 @@ function Home() {
     }
   }
 
-  function updateNote(id) {
-    axios
-      .patch(`https://keeper-mern.herokuapp.com/notes/${id[0]}`, {
-        params: {
-          user: user.email,
-        },
-      })
-      .then((res) => {
-        console.log(res);
-      });
-  }
-
   function deleteNote(id) {
     setNotes((prevNotes) => {
       return prevNotes.filter((noteItem, index) => {
