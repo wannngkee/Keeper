@@ -43,7 +43,7 @@ footer p {
   background: #fff;
   border-radius: 7px;
   box-shadow: 0 2px 5px #ccc;
-  padding: 10px;
+  padding: 15px;
   width: 240px;
   margin: 16px;
   float: left;
@@ -53,6 +53,7 @@ footer p {
 .note input:disabled {
   color: #000;
   border: none;
+  background-color: transparent;
 }
 .note input {
   font-size: 1.1em;

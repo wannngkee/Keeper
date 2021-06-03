@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import AddIcon from "@material-ui/icons/Add";
 import Fab from "@material-ui/core/Fab";
 import Zoom from "@material-ui/core/Zoom";
-import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 
 function CreateArea(props) {
@@ -28,15 +27,7 @@ function CreateArea(props) {
   function submitNote(event) {
     if (props.isAuthenticated) {
       props.onAdd(note);
-      const newNote = {
-        title: note.title,
-        content: note.content,
-        user: props.user,
-      };
-      if (newNote.title && newNote.content) {
-        axios
-          .post("https://keeper-mern.herokuapp.com/notes", newNote)
-          .then((res) => console.log(res.data));
+      if (note.title || note.content) {
         setNote({
           title: "",
           content: "",

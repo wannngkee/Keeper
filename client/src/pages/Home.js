@@ -17,9 +17,13 @@ function Home() {
   const getAllNotes = async () => {
     if (isAuthenticated) {
       await axios
-        .get("https://keeper-mern.herokuapp.com/notes")
+        .get("https://keeper-mern.herokuapp.com/notes", {
+          params: {
+            user: user.email,
+          },
+        })
         .then((res) => {
-          const allNotes = res.data;
+          const allNotes = res.data[0].notes;
           setNotes(allNotes);
         })
         .catch(function (err) {
@@ -43,22 +47,39 @@ function Home() {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   }
 
   function addNote(newNote) {
     setOpen(true);
-    if (newNote.title && newNote.content) {
+    if (newNote.title || newNote.content) {
       setNotes((prevNotes) => {
         return [...prevNotes, newNote];
       });
       setType("success");
       setMessage("Note added");
+      axios
+        .post("https://keeper-mern.herokuapp.com/notes", {
+          ...newNote,
+          user: user.email,
+        })
+        .then((res) => console.log(res.data));
     } else {
       setType("error");
-      setMessage("Note cannot be added without title or content");
+      setMessage("Note cannot be empty");
     }
+  }
+
+  function updateNote(id) {
+    axios
+      .patch(`https://keeper-mern.herokuapp.com/notes/${id[0]}`, {
+        params: {
+          user: user.email,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      });
   }
 
   function deleteNote(id) {
@@ -68,7 +89,11 @@ function Home() {
       });
     });
     axios
-      .delete(`https://keeper-mern.herokuapp.com/notes/${id[0]}`)
+      .delete(`https://keeper-mern.herokuapp.com/notes/${id[0]}`, {
+        params: {
+          user: user.email,
+        },
+      })
       .then((res) => {
         console.log(res);
       });
@@ -77,11 +102,7 @@ function Home() {
   return (
     <div>
       <Header />
-      <CreateArea
-        onAdd={addNote}
-        isAuthenticated={isAuthenticated}
-        user={user.email}
-      />
+      <CreateArea onAdd={addNote} isAuthenticated={isAuthenticated} />
       <Snackbar
         open={open}
         autoHideDuration={2000}
@@ -98,7 +119,6 @@ function Home() {
             note={noteItem}
             setNotes={setNotes}
             onDelete={deleteNote}
-            user={user.email}
           />
         );
       })}
